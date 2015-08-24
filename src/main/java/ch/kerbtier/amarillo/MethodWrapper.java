@@ -7,14 +7,14 @@ import java.util.regex.PatternSyntaxException;
 
 public class MethodWrapper {
 
-  private Class subject;
+  private Class<?> subject;
   private Method method;
   private Pattern pattern;
   private Verb verb;
 
   // private HTTPMethod httpMethod;
 
-  public MethodWrapper(String parentPattern, Verb verb, Class subject, Method method, Route action) {
+  protected MethodWrapper(String parentPattern, Verb verb, Class<?> subject, Method method, Route action) {
     this.subject = subject;
     this.method = method;
     // this.httpMethod = action.method();
@@ -29,7 +29,7 @@ public class MethodWrapper {
     
     if (parentPattern == null) {
       if(actionPattern == null) {
-        
+        // will be empty path
       } else { // actionPattern != null
         fixedPattern += actionPattern;
       }
@@ -52,11 +52,11 @@ public class MethodWrapper {
     try {
       pattern = Pattern.compile(fixedPattern);
     } catch (PatternSyntaxException e) {
-      throw new RuntimeException("verb " + method + " has invalid pattern.", e);
+      throw new RuntimeException("method " + method + " has invalid pattern", e);
     }
   }
 
-  public Call getCall(String path, Verb httpMethod) {
+  protected Call getCall(String path, Verb httpMethod) {
     if (this.verb == httpMethod) {
       Matcher matcher = pattern.matcher(path);
       if (matcher.find()) {
@@ -66,12 +66,13 @@ public class MethodWrapper {
     return null;
   }
 
-  public Verb getVerb() {
+  protected Verb getVerb() {
     return verb;
   }
 
-  public Pattern getPattern() {
+  protected Pattern getPattern() {
     return pattern;
   }
-
+  
 }
+

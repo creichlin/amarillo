@@ -8,23 +8,23 @@ import com.google.common.base.CaseFormat;
 
 public class Call {
 
-  private Class subject;
+  private Class<?> subject;
   private Method method;
   private Matcher matcher;
   private int totalMatched = 0;
 
-  public Call(Class subject, Method method, Matcher matcher) {
+  public Call(Class<?> subject, Method method, Matcher matcher) {
     this.subject = subject;
     this.method = method;
     this.matcher = matcher;
-    
+
     String totalMatch = "";
-    for(int group = 1; group <= matcher.groupCount(); group++) {
+    for (int group = 1; group <= matcher.groupCount(); group++) {
       totalMatch += matcher.group(group);
     }
     totalMatched = totalMatch.length();
   }
-  
+
   public int getTotalMatched() {
     return totalMatched;
   }
@@ -32,12 +32,12 @@ public class Call {
   public Method getMethod() {
     return method;
   }
-  
+
   public boolean has(Class<? extends Annotation> annotation) {
     return method.isAnnotationPresent(annotation);
   }
-  
-  public Class getSubject() {
+
+  public Class<?> getSubject() {
     return subject;
   }
 
@@ -48,8 +48,7 @@ public class Call {
       throw new RuntimeException("could not instantiate subject", e);
     }
   }
-  
-  
+
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public Object execute(Object instance) {
     Class<?>[] pts = method.getParameterTypes();
@@ -69,34 +68,48 @@ public class Call {
         parameters[cnt] = Integer.parseInt(part);
       } else if (Integer.class.isAssignableFrom(parameterType)) {
         if ("null".equals(part)) {
-          parameters[cnt] = (Integer) null;
+          parameters[cnt] = null;
         } else {
           parameters[cnt] = Integer.parseInt(part);
         }
       } else if (Long.TYPE.isAssignableFrom(parameterType)) {
+        parameters[cnt] = Long.parseLong(part);
+      } else if (Long.class.isAssignableFrom(parameterType)) {
+        if ("null".equals(part)) {
+          parameters[cnt] = null;
+        } else {
           parameters[cnt] = Long.parseLong(part);
-        } else if (Long.class.isAssignableFrom(parameterType)) {
-          if ("null".equals(part)) {
-            parameters[cnt] = (Long) null;
-          } else {
-            parameters[cnt] = Long.parseLong(part);
-          }
+        }
       } else if (String.class.isAssignableFrom(parameterType)) {
         parameters[cnt] = part;
       } else if (parameterType.isEnum()) {
+        part = part.replace("-", "_");
         try { // same case enum
 
           parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), part);
 
         } catch (IllegalArgumentException e) {
+
+          String partHyphen = part;
+          // check if mixed case
+          if (!part.toLowerCase().equals(part) && !part.toUpperCase().equals(part)) {
+            partHyphen = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, part);
+          }
+
           try { // upper case enum
-            parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), part.toUpperCase());
+            parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), partHyphen.toUpperCase());
           } catch (IllegalArgumentException e2) {
-            String lowerCamel = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, part);
-            try { // lowerCamelCaseFrom Hyphen
-              parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), lowerCamel);
+            try { // lower case enum
+              parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), partHyphen.toLowerCase());
             } catch (IllegalArgumentException e3) {
-              throw new IllegalArgumentException("No value found for " + part + " or " + part.toUpperCase() + " or " + lowerCamel + " in enum " + parameterType.getCanonicalName());
+              String lowerCamel = CaseFormat.LOWER_HYPHEN.to(CaseFormat.LOWER_CAMEL, partHyphen.toLowerCase());
+              try { // lowerCamelCaseFrom Hyphen
+                parameters[cnt] = Enum.valueOf(((Class<? extends Enum>) parameterType), lowerCamel);
+              } catch (IllegalArgumentException e4) {
+                throw new IllegalArgumentException("No value found for " + part + " or " + partHyphen.toUpperCase()
+                    + " or " + partHyphen.toLowerCase() + " or " + lowerCamel + " in enum "
+                    + parameterType.getCanonicalName());
+              }
             }
           }
         }
@@ -117,6 +130,7 @@ public class Call {
 
   }
 
+  @Override
   public String toString() {
     return "<" + method.toString() + ">";
   }

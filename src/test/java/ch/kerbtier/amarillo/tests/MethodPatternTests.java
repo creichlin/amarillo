@@ -23,28 +23,28 @@ public class MethodPatternTests {
   
   @Test
   public void rootGetTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("", Verb.GET);
+    Call call = routing.find("", Verb.GET);
         
     assertEquals(call.getMethod(), MethodPattern.class.getMethod("rootGet"));
   }
 
   @Test
   public void rootPostTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("", Verb.POST);
+    Call call = routing.find("", Verb.POST);
         
     assertEquals(call.getMethod(), MethodPattern.class.getMethod("rootPost"));
   }
 
   @Test
   public void pathGetTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("path", Verb.GET);
+    Call call = routing.find("path", Verb.GET);
         
     assertEquals(call.getMethod(), MethodPattern.class.getMethod("pathGet"));
   }
 
   @Test
   public void pathPostTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("path", Verb.POST);
+    Call call = routing.find("path", Verb.POST);
         
     assertEquals(call.getMethod(), MethodPattern.class.getMethod("pathPost"));
   }

@@ -9,12 +9,12 @@ public class ClassPattern {
 
   @Route
   public void rootGet() {
-    
+    // nothing
   }
   
   @Route(verb = Verb.POST)
   public void rootPost() {
-    
+    // nothing
   }
   
 }

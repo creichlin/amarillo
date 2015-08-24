@@ -21,25 +21,25 @@ public class CombinedPatternTests {
   
   @Test
   public void rootGetTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("class", Verb.GET);
+    Call call = routing.find("class", Verb.GET);
     assertEquals(call.getMethod(), CombinedPattern.class.getMethod("rootGet"));
   }
 
   @Test
   public void rootPostTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("class", Verb.POST);
+    Call call = routing.find("class", Verb.POST);
     assertEquals(call.getMethod(), CombinedPattern.class.getMethod("rootPost"));
   }
 
   @Test
   public void pathGetTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("class/path", Verb.GET);
+    Call call = routing.find("class/path", Verb.GET);
     assertEquals(call.getMethod(), CombinedPattern.class.getMethod("pathGet"));
   }
 
   @Test
   public void pathPostTest() throws NoSuchMethodException, SecurityException {
-    Call call = routing.getCall("class/path", Verb.POST);
+    Call call = routing.find("class/path", Verb.POST);
     assertEquals(call.getMethod(), CombinedPattern.class.getMethod("pathPost"));
   }
 }

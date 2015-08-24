@@ -2,7 +2,7 @@ package ch.kerbtier.amarillo.tests.actions;
 
 import ch.kerbtier.amarillo.Route;
 
-
+@SuppressWarnings("unused")
 public class MethodParameter {
 
   @Route(pattern = "integer/(\\d{2,4})")
@@ -18,6 +18,11 @@ public class MethodParameter {
   @Route(pattern = "long/(\\d+)")
   public Long longSchlong(long l1) {
     return l1;
+  }
+  
+  @Route(pattern = "enum/(\\w+)")
+  public TestEnum enumTest(TestEnum e) {
+    return e;
   }
   
 }

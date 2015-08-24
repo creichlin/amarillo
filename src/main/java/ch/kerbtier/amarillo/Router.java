@@ -9,19 +9,25 @@ public class Router {
   private List<ClassWrapper> classWrappers = new ArrayList<>();
 
   public void register(Class<? extends Object> def) {
-    ClassWrapper dispatcher = new ClassWrapper(def);
-    classWrappers.add(dispatcher);
+    ClassWrapper classWrapper = new ClassWrapper(def);
+    classWrappers.add(classWrapper);
   }
 
-  public Call getCall(String path, Verb verb) {
-    List<Call> calls = getCalls(path, verb);
+  public Call find(String path, Verb verb) {
+    List<Call> calls = findAll(path, verb);
     if (calls.size() > 0) {
       return calls.get(0);
     }
     throw new NoMatchException("path " + path + " with verb " + verb + " has no match");
   }
 
-  public List<Call> getCalls(String path, Verb method) {
+  /**
+   * gets all matched calls, with highest specificity first
+   * @param path
+   * @param method
+   * @return
+   */
+  public List<Call> findAll(String path, Verb method) {
     List<Call> calls = new ArrayList<>();
 
     for (ClassWrapper dm : classWrappers) {

@@ -9,22 +9,22 @@ public class CombinedPattern {
 
   @Route
   public void rootGet() {
-    
+    // nothing
   }
   
   @Route(verb = Verb.POST)
   public void rootPost() {
-    
+    // nothing
   }
 
   @Route(pattern = "path")
   public void pathGet() {
-    
+    // nothing
   }
   
   @Route(pattern = "path", verb = Verb.POST)
   public void pathPost() {
-    
+    // nothing
   }
   
 }
