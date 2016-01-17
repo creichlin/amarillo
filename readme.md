@@ -1,7 +1,7 @@
 amarillo
 ========
 
-Java path routing implemetation.
+Java path routing implementation.
 
 Why?
 ----
@@ -30,7 +30,7 @@ To use routing one has to create a Router instance and register classes which co
 A route class might look like:
 
     @Route(pattern = "entity/(\\d+)")
-    class testRoutes {
+    class TestRoutes {
       @Route()
       public void viewEntity(int id) {...
 
@@ -43,7 +43,7 @@ A route class might look like:
 
 Those methods can be called like:
 
-    Call call = router.findAll("entity/30/edit", Verb.GET);
+    Call call = router.find("entity/30/edit", Verb.GET);
     call.execute();
 
 This can be called from a servlet which uses url path and HTTp method or it can also be used in other ways.
